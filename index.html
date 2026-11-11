@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0B0F19">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="PIKAZOO Premium Mod Menu">
+    <title>PIKAZOO PREMIUM | 4.7</title>
+    
+    <!-- ======================================================================
+         GOOGLE FONTS
+         ====================================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. ROOT VARIABLES & THEME
+           ========================================================================== */
+        :root {
+            --bg-dark: #0B0F19;
+            --bg-card: rgba(18, 26, 43, 0.7);
+            --bg-card-hover: rgba(26, 38, 63, 0.8);
+            
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.15);
+            --glass-blur: blur(20px);
+            
+            --accent-cyan: #00E5FF;
+            --accent-cyan-glow: rgba(0, 229, 255, 0.3);
+            
+            --accent-green: #00FF88;
+            --accent-green-glow: rgba(0, 255, 136, 0.3);
+            
+            --accent-red: #FF3366;
+            --accent-red-glow: rgba(255, 51, 102, 0.4);
+            
+            --accent-purple: #A855F7;
+            --accent-purple-glow: rgba(168, 85, 247, 0.3);
+            
+            --accent-gold: #FFD700;
+            --accent-gold-glow: rgba(255, 215, 0, 0.3);
+            
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dark: #0F172A;
+            
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* ==========================================================================
+           2. NATIVE APP RESET & BEHAVIORS
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-touch-callout: none; 
+            user-select: none; 
+            touch-action: manipulation; 
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overscroll-behavior-y: none; 
+            overscroll-behavior-x: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        /* Fixed background lives on its own GPU layer (background-attachment:fixed
+           repaints on every scroll frame on mobile and causes tearing). */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] body { font-family: 'Noto Nastaliq Urdu', 'Plus Jakarta Sans', sans-serif; }
+        [dir="rtl"] .list-item { flex-direction: row-reverse; text-align: right; }
+        [dir="rtl"] .payment-row { flex-direction: row-reverse; }
+        [dir="rtl"] .rule-card { border-left: none; border-right: 4px solid var(--accent-purple); border-radius: var(--radius-md) 0 0 var(--radius-md); }
+
+        ::-webkit-scrollbar { width: 0px; background: transparent; } 
+
+        /* ==========================================================================
+           3. TRANSPARENT FLOATING HEADER & iOS LIQUID SWITCHER
+           ========================================================================== */
+        .main-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-header {
+            width: 100%;
+            padding: 15px 15px 20px 15px;
+            padding-top: calc(15px + env(safe-area-inset-top, 0px)); 
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+        }
+
+        .lang-switcher {
+            direction: ltr; 
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 6px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 100%;
+            max-width: 500px;
+            flex-wrap: nowrap; 
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+        }
+        
+        .lang-switcher::-webkit-scrollbar { display: none; } 
+
+        .lang-btn {
+            flex: 1 0 auto;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .lang-btn.active {
+            background: var(--text-main);
+            color: var(--text-dark);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ==========================================================================
+           4. MAIN LAYOUT
+           ========================================================================== */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            will-change: opacity, transform;
+        }
+
+        .container.lang-fade {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+        }
+
+        .main-header {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
+
+        .main-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #FFFFFF, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--accent-cyan-glow);
+            margin-bottom: 6px;
+        }
+
+        .main-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent-gold-glow);
+            text-transform: uppercase;
+        }
+
+        /* ==========================================================================
+           5. CARDS
+           ========================================================================== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 22px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            
+            opacity: 0;
+            transform: translate3d(0, 40px, 0) scale(0.98);
+            /* Only animate compositor-friendly properties (never "all") */
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            isolation: isolate;
+            contain: layout paint;
+        }
+
+        .card.active {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+            will-change: auto; /* release the layer once settled */
+        }
+
+        .card .pricing-container,
+        .card .price-card {
+            position: relative;
+            z-index: 1;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card.theme-green { border-top: 2px solid var(--accent-green); }
+        .card.theme-cyan { border-top: 2px solid var(--accent-cyan); }
+        .card.theme-purple { border-top: 2px solid var(--accent-purple); }
+        .card.theme-gold { border-top: 2px solid var(--accent-gold); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 18px;
+        }
+
+        .card-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .theme-green .card-header h2 { color: var(--accent-green); }
+        .theme-cyan .card-header h2 { color: var(--accent-cyan); }
+        .theme-purple .card-header h2 { color: var(--accent-purple); }
+        .theme-gold .card-header h2 { color: var(--accent-gold); }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* ==========================================================================
+           6. STATIC ICONS & LIST ITEMS
+           ========================================================================== */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14.5px;
+            color: #E2E8F0;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+
+        .icon-3d-box {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 600px;
+            flex-shrink: 0;
+        }
+
+        .icon-plate {
+            position: absolute;
+            bottom: 0;
+            width: 28px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            transform: rotateX(60deg);
+        }
+
+        .icon-glow {
+            position: absolute;
+            bottom: -4px;
+            width: 30px;
+            height: 15px;
+            border-radius: 50%;
+            filter: blur(6px);
+            opacity: 0.6;
+            transform: rotateX(60deg);
+        }
+
+        .theme-green .icon-glow { background: var(--accent-green); box-shadow: 0 0 15px var(--accent-green); }
+        .theme-cyan .icon-glow { background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); }
+        .theme-purple .icon-glow { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
+        .theme-gold .icon-glow { background: var(--accent-gold); box-shadow: 0 0 15px var(--accent-gold); }
+
+        .icon-svg {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transform: translate3d(0, -4px, 0);
+            z-index: 2;
+        }
+
+        .theme-green .icon-svg { stroke: var(--accent-green); filter: drop-shadow(0 5px 5px rgba(0, 255, 136, 0.3)); }
+        .theme-cyan .icon-svg { stroke: var(--accent-cyan); filter: drop-shadow(0 5px 5px rgba(0, 229, 255, 0.3)); }
+        .theme-purple .icon-svg { stroke: var(--accent-purple); filter: drop-shadow(0 5px 5px rgba(168, 85, 247, 0.3)); }
+        .theme-gold .icon-svg { stroke: var(--accent-gold); filter: drop-shadow(0 5px 5px rgba(255, 215, 0, 0.3)); }
+
+        /* ==========================================================================
+           7. SPECIFIC CONTENT STYLES
+           ========================================================================== */
+        .text-highlight { color: var(--accent-gold); font-weight: 700; }
+
+        .color-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .color-red { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow); }
+        .color-green { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green-glow); }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            width: 100%;
+        }
+        
+        .payment-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .payment-box h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14.5px;
+            gap: 10px;
+        }
+
+        .btn-copy {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--accent-cyan);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:active { transform: scale(0.95); }
+
+        .pricing-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .price-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .price-card.active-discount {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.08) 0%, transparent 100%);
+        }
+
+        .price-card.mega-discount {
+            border-color: rgba(0, 255, 136, 0.3);
+            background: linear-gradient(90deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%);
+        }
+
+        .price-value { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; }
+        .price-gold { color: var(--accent-gold); }
+        .price-green { color: var(--accent-green); }
+        .price-original { text-decoration: line-through; color: var(--text-muted); font-size: 16px; }
+
+        .rule-card {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-left: 4px solid var(--accent-purple);
+            padding: 16px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-bottom: 12px;
+        }
+
+        .rule-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--accent-purple);
+            margin-bottom: 8px;
+        }
+
+        .rule-text {
+            font-size: 13.5px;
+            color: #CBD5E1;
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           8. FOOTER CTA, BUTTON STATES & IMAGE PREVIEWS
+           ========================================================================== */
+        .footer-cta {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+        }
+
+        /* Image Previews Layout (3 fixed slots, no layout jump) */
+        .preview-wrap { margin-bottom: 20px; }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 320px;
+            margin: 0 auto 8px;
+            transform: translateZ(0);
+        }
+
+        .preview-slot {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+            -webkit-mask-image: -webkit-radial-gradient(white, black); /* iOS rounded-clip fix */
+        }
+
+        .preview-slot.empty:active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .preview-slot.empty.locked { opacity: 0.35; pointer-events: none; }
+
+        .preview-slot.filled {
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 4px 10px rgba(0, 229, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-slot.filled.enter { animation: popIn 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+
+        .preview-slot img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            -webkit-user-drag: none;
+            transform: translateZ(0);
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .preview-remove:active { background: var(--accent-red); }
+
+        .preview-counter {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .preview-counter.full { color: var(--accent-green); }
+
+        .alt-share {
+            display: inline-block;
+            margin-top: 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .alt-share[hidden] { display: none; }
+
+        .direct-row { margin-top: 18px; }
+        .direct-label { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        .direct-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .direct-btn {
+            font-family: inherit; font-size: 13px; font-weight: 700;
+            color: var(--text-main); background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border-hover); border-radius: 40px;
+            padding: 9px 16px; cursor: pointer; transition: background-color 0.2s;
+        }
+        .direct-btn:active { background: rgba(255,255,255,0.14); }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(5, 8, 15, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            transform: translateZ(0);
+        }
+
+        .lightbox.show { opacity: 1; pointer-events: auto; }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: var(--radius-md);
+            object-fit: contain;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), #0077B6);
+            color: var(--bg-dark);
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 16px 30px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* Button Loading State */
+        .btn-primary.loading {
+            opacity: 0.8;
+            pointer-events: none;
+            background: linear-gradient(135deg, #0077B6, #005f8f);
+        }
+
+        .btn-primary.loading::before {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--bg-dark);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Custom Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+            left: 50%;
+            transform: translate3d(-50%, 150%, 0);
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            z-index: 9999;
+            text-align: center;
+            width: max-content;
+            max-width: 90%;
+        }
+
+        .toast.show { transform: translate3d(-50%, 0, 0); opacity: 1; }
+
+        @media (min-width: 600px) {
+            .payment-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 400px) {
+            .main-title { font-size: 26px; }
+            .lang-btn { font-size: 12px; padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <!-- Hidden File Input (Enabled for Multiple Files) -->
+    <input type="file" id="screenshotInput" accept="image/*" multiple style="display: none;">
+
+    <!-- Custom Toast -->
+    <div id="toast" class="toast">Message</div>
+
+    <!-- Image Lightbox -->
+    <div id="lightbox" class="lightbox"><img id="lightboxImg" alt=""></div>
+
+    <!-- MAIN SCROLL AREA -->
+    <div class="main-scroll-area">
+        
+        <!-- TRANSPARENT FLOATING HEADER (Scrolls with page) -->
+        <header class="app-header">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLanguage('en', this)">English</button>
+                <button class="lang-btn" onclick="changeLanguage('hi', this)">Hinglish</button>
+                <button class="lang-btn" onclick="changeLanguage('ur', this)">اردو</button>
+                <button class="lang-btn" onclick="changeLanguage('ar', this)">العربية</button>
+                <button class="lang-btn" onclick="changeLanguage('es', this)">Español</button>
+            </div>
+        </header>
+
+        <div class="container" id="main-container">
+            
+            <!-- HEADER -->
+            <div class="main-header">
+                <h1 class="main-title">PUBG 4.7 PREMIUM</h1>
+                <h2 class="main-subtitle" data-i18n="header_sub">100% SAFE MAIN ACCOUNT</h2>
+            </div>
+
+            <!-- CARD 1: FEATURES -->
+            <div class="card theme-green reveal">
+                <div class="card-header">
+                    <h2 data-i18n="features_title">PBC Features</h2>
+                </div>
+                <div class="card-body">
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_wallhack">WallHack PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_color">Color Body PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_grass">No Grass PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_water">No Water PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_smoke">No Smoke PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_tree">Less Tree PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_sky">Black Sky PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="feat_antenna">Antenna PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+                        </div>
+                        <span data-i18n="feat_aim">Aim iPhone PBC</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                        </div>
+                        <span data-i18n="feat_fps">Feels 120 FPS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: WALL-HACK -->
+            <div class="card theme-cyan reveal">
+                <div class="card-header">
+                    <h2 data-i18n="wallhack_title">Wall-Hack Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </div>
+                        <span data-i18n="wall_vis">Enemy Color Visibility.</span>
+                    </div>
+                    
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span><span class="color-indicator color-red"></span> <span data-i18n="wall_cover">Enemies In Cover (Red)</span></span>
+                    </div>
+                    
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span><span class="color-indicator color-green"></span> <span data-i18n="wall_open">Enemies In Open (Green)</span></span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="wall_choice">You can also choose the color of your choice.</span>
+                    </div>
+                    
+                    <div class="rule-card" style="margin-top: 10px;">
+                        <div class="rule-title" data-i18n="wall_warning_title">SECURE NOTICE</div>
+                        <div class="rule-text" data-i18n="wall_warning_text">
+                            If Someone Says Permanent Blink Fix - No Need Data On Off Trick. So of course he is Lying!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: PAK FILES -->
+            <div class="card theme-purple reveal">
+                <div class="card-header">
+                    <h2 data-i18n="pak_title">PAK File Features</h2>
+                </div>
+                <div class="card-body">
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="pak_lua">AimBot Lua File</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="pak_pak">Aimbot Pak File</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="pak_esp">Esp Location File</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="pak_magic">Magic Bullet File</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-3d-box">
+                            <div class="icon-plate"></div><div class="icon-glow"></div>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <span data-i18n="pak_assist">Aim Assist File</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4: PAYMENT -->
+            <div class="card theme-gold reveal">
+                <div class="card-header">
+                    <h2 data-i18n="pay_title">Payment Methods</h2>
+                </div>
+                <div class="card-body">
+                    <div class="payment-grid">
+                        <div class="payment-box">
+                            <h4 data-i18n="pay_global">Worldwide</h4>
+                            <div class="payment-row">
+                                <span style="color: var(--text-muted);">PUBG UC</span>
+                                <span style="font-weight: 700;">420 UC</span>
+                            </div>
+                            <div class="payment-row">
+                                <span style="color: var(--text-muted);">Binance / Crypto</span>
+                                <span style="font-weight: 700;">USDT $8</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-box" style="border-color: rgba(255, 215, 0, 0.3);">
+                            <h4 style="color: var(--accent-gold);" data-i18n="pay_pak">Pakistan Only</h4>
+                            <div class="payment-row" style="margin-bottom: 12px;">
+                                <div>
+                                    <div style="font-size: 11px; color: var(--text-muted);" data-i18n="pay_jazz">JazzCash Number</div>
+                                    <div style="font-size: 16px; font-weight: 800;">03041891897</div>
+                                </div>
+                                <button class="btn-copy" onclick="copyToClipboard('03041891897', this)" data-i18n="pay_copy">Copy</button>
+                            </div>
+                            <div class="payment-row">
+                                <div>
+                                    <div style="font-size: 11px; color: var(--text-muted);" data-i18n="pay_acc_name">Account Name</div>
+                                    <div style="font-size: 14px; font-weight: 700;">Muhammad Shoaib</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 5: PRICING -->
+            <div class="card theme-gold reveal">
+                <div class="card-header">
+                    <h2 data-i18n="price_title">Premium Pricing</h2>
+                </div>
+                <div class="card-body">
+                    <div class="pricing-container">
+                        <div class="price-card">
+                            <span data-i18n="price_orig">Original Price</span>
+                            <div><span class="price-original">PKR 2,000</span></div>
+                        </div>
+                        <div class="price-card active-discount">
+                            <div>
+                                <span data-i18n="price_25">25% OFF Discount</span>
+                                <div style="font-size: 11px; color: var(--text-muted);" data-i18n="price_applied">Already Applied!</div>
+                            </div>
+                            <span class="price-value price-gold">PKR 1,500</span>
+                        </div>
+                        <div class="price-card mega-discount">
+                            <div>
+                                <span data-i18n="price_50">50% OFF Discount</span>
+                                <div style="font-size: 11px; color: var(--text-muted);" data-i18n="price_invite">Invite a Friend</div>
+                            </div>
+                            <span class="price-value price-green">PKR 1,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 6: RULES -->
+            <div class="card theme-purple reveal">
+                <div class="card-header">
+                    <h2 data-i18n="rules_title">Rules & Policies</h2>
+                </div>
+                <div class="card-body">
+                    <div class="rule-card">
+                        <div class="rule-title" data-i18n="rule_1_title">Rule 1: Device Lock</div>
+                        <div class="rule-text" data-i18n="rule_1_text">
+                            One password works on one mobile only. No sharing. No resets. If you reset, you pay again.
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-title" data-i18n="rule_2_title">Rule 2: No Refunds</div>
+                        <div class="rule-text" data-i18n="rule_2_text">
+                            Once the password is activated, the money cannot be refunded.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer-cta reveal">
+                <h3 data-i18n="footer_title" style="color: var(--accent-cyan); font-family: 'Outfit'; font-size: 18px; margin-bottom: 10px;">AFTER PAYMENT</h3>
+                <p data-i18n="footer_text" style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Send screenshot proof to get your access.</p>
+                
+                <!-- Image Preview Container (max 3) -->
+                <div class="preview-wrap">
+                    <div id="previewContainer" class="preview-container"></div>
+                    <div id="previewCounter" class="preview-counter">0 / 3</div>
+                </div>
+                
+                <!-- Main Action Button -->
+                <a href="#" class="btn-primary" id="shareBtn" onclick="handleMainAction(event)" data-i18n="footer_btn">Select Images</a>
+                <div class="direct-row">
+                    <div class="direct-label" data-i18n="footer_alt">Or open the chat directly:</div>
+                    <div class="direct-btns">
+                        <button type="button" class="direct-btn" id="chatMessengerBtn">WhatsApp</button>
+                        <button type="button" class="direct-btn" id="chatBusinessBtn">WhatsApp Business</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         JAVASCRIPT LOGIC
+         ====================================================================== -->
+    <script>
+        "use strict";
+
+        // Disable long-press context menu to feel like a native app
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // Disable double-tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        /* ======================================================================
+           1. TRANSLATIONS DICTIONARY
+           ====================================================================== */
+        const translations = {
+            en: {
+                header_sub: "100% SAFE MAIN ACCOUNT",
+                features_title: "PBC Features",
+                feat_wallhack: "WallHack PBC",
+                feat_color: "Color Body PBC",
+                feat_grass: "No Grass PBC",
+                feat_water: "No Water PBC",
+                feat_smoke: "No Smoke PBC",
+                feat_tree: "Less Tree PBC",
+                feat_sky: "Black Sky PBC",
+                feat_antenna: "Antenna PBC",
+                feat_aim: "Aim iPhone PBC",
+                feat_fps: "Feels 120 FPS",
+                wallhack_title: "Wall-Hack Details",
+                wall_vis: "Enemy Color Visibility.",
+                wall_cover: "Enemies In Cover (Red)",
+                wall_open: "Enemies In Open (Green)",
+                wall_choice: "You can also choose the color of your choice.",
+                wall_warning_title: "SECURE NOTICE",
+                wall_warning_text: "If Someone Says Permanent Blink Fix - No Need Data On Off Trick. So of course he is Lying!",
+                pak_title: "PAK File Features",
+                pak_lua: "AimBot Lua File",
+                pak_pak: "Aimbot Pak File",
+                pak_esp: "Esp Location File",
+                pak_magic: "Magic Bullet File",
+                pak_assist: "Aim Assist File",
+                pay_title: "Payment Methods",
+                pay_global: "Worldwide",
+                pay_pak: "Pakistan Only",
+                pay_jazz: "JazzCash Number",
+                pay_acc_name: "Account Name",
+                pay_copy: "Copy",
+                price_title: "Premium Pricing",
+                price_orig: "Original Price",
+                price_25: "25% OFF Discount",
+                price_applied: "Already Applied!",
+                price_50: "50% OFF Discount",
+                price_invite: "Invite a Friend",
+                rules_title: "Rules & Policies",
+                rule_1_title: "Rule 1: Device Lock",
+                rule_1_text: "One password works on one mobile only. No sharing. No resets. If you reset, you pay again.",
+                rule_2_title: "Rule 2: No Refunds",
+                rule_2_text: "Once the password is activated, the money cannot be refunded.",
+                footer_title: "AFTER PAYMENT",
+                footer_text: "Send screenshot proof to get your access.",
+                footer_btn: "Select & Send Screenshot",
+                footer_btn_select: "Select Images",
+                footer_btn_send: "Send {n} Image(s)",
+                toast_fallback: "Your browser cannot attach images automatically. Opening the chat, please attach them with the paperclip.",
+                toast_copied: "Number copied. If asked for a contact, paste it in the search box.",
+                toast_limit: "You can select a maximum of 3 images.",
+                footer_alt: "Or open the chat directly:"
+            },
+            hi: {
+                header_sub: "100% SAFE MAIN ACCOUNT",
+                features_title: "PBC Features",
+                feat_wallhack: "WallHack PBC",
+                feat_color: "Color Body PBC",
+                feat_grass: "No Grass PBC",
+                feat_water: "No Water PBC",
+                feat_smoke: "No Smoke PBC",
+                feat_tree: "Less Tree PBC",
+                feat_sky: "Black Sky PBC",
+                feat_antenna: "Antenna PBC",
+                feat_aim: "Aim iPhone PBC",
+                feat_fps: "Feels 120 FPS",
+                wallhack_title: "Wall-Hack Ki Details",
+                wall_vis: "Enemy Color Visibility.",
+                wall_cover: "Enemies In Cover (Red)",
+                wall_open: "Enemies In Open (Green)",
+                wall_choice: "Aap apni pasand ka color bhi choose kar sakte hain.",
+                wall_warning_title: "SECURE NOTICE",
+                wall_warning_text: "Agar koi bole Permanent Blink Fix hai aur Data On Off ki zaroorat nahi, toh wo pakka jhoot bol raha hai!",
+                pak_title: "PAK File Features",
+                pak_lua: "AimBot Lua File",
+                pak_pak: "Aimbot Pak File",
+                pak_esp: "Esp Location File",
+                pak_magic: "Magic Bullet File",
+                pak_assist: "Aim Assist File",
+                pay_title: "Payment Methods",
+                pay_global: "Worldwide",
+                pay_pak: "Sirf Pakistan Ke Liye",
+                pay_jazz: "JazzCash Number",
+                pay_acc_name: "Account Name",
+                pay_copy: "Copy",
+                price_title: "Premium Price",
+                price_orig: "Original Price",
+                price_25: "25% OFF Discount",
+                price_applied: "Pehle Se Applied Hai!",
+                price_50: "50% OFF Discount",
+                price_invite: "Friend Ko Invite Karein",
+                rules_title: "Rules & Policies",
+                rule_1_title: "Rule 1: Device Lock",
+                rule_1_text: "Ek password sirf ek mobile pe chalega. Share nahi kar sakte. Reset karne pe dobara paise dene padenge.",
+                rule_2_title: "Rule 2: No Refunds",
+                rule_2_text: "Password activate hone ke baad paise wapas nahi milenge.",
+                footer_title: "PAYMENT KE BAAD",
+                footer_text: "Access paane ke liye screenshot bhejein.",
+                footer_btn: "Select & Send Screenshot",
+                footer_btn_select: "Images Select Karein",
+                footer_btn_send: "{n} Image(s) Send Karein",
+                toast_fallback: "Aapka browser images auto-attach nahi kar sakta. Chat khul rahi hai, paperclip se attach karein.",
+                toast_copied: "Number copy ho gaya. Contact poocha jaye to search mein paste karein.",
+                toast_limit: "Aap maximum 3 images select kar sakte hain.",
+                footer_alt: "Ya seedha chat kholein:"
+            },
+            ur: {
+                header_sub: "100% محفوظ مین اکاؤنٹ",
+                features_title: "پی بی سی فیچرز",
+                feat_wallhack: "وال ہیک پی بی سی",
+                feat_color: "کلر باڈی پی بی سی",
+                feat_grass: "نو گراس پی بی سی",
+                feat_water: "نو واٹر پی بی سی",
+                feat_smoke: "نو اسموک پی بی سی",
+                feat_tree: "لیس ٹری پی بی سی",
+                feat_sky: "بلیک اسکائی پی بی سی",
+                feat_antenna: "انٹینا پی بی سی",
+                feat_aim: "ایم آئی فون پی بی سی",
+                feat_fps: "فیلز 120 ایف پی ایس",
+                wallhack_title: "وال ہیک کی تفصیلات",
+                wall_vis: "دشمن کا رنگ نظر آنا۔",
+                wall_cover: "کور میں دشمن (سرخ)",
+                wall_open: "کھلے میں دشمن (گرین)",
+                wall_choice: "آپ اپنی پسند کا رنگ بھی چن سکتے ہیں۔",
+                wall_warning_title: "سیکیور نوٹس",
+                wall_warning_text: "اگر کوئی کہے کہ پرمننٹ بلنک فکس ہے اور ڈیٹا آن آف کی ضرورت نہیں، تو وہ یقیناً جھوٹ بول رہا ہے!",
+                pak_title: "پاک فائل فیچرز",
+                pak_lua: "AimBot Lua File",
+                pak_pak: "Aimbot Pak File",
+                pak_esp: "Esp Location File",
+                pak_magic: "Magic Bullet File",
+                pak_assist: "Aim Assist File",
+                pay_title: "پیمنٹ کا طریقہ",
+                pay_global: "دنیا بھر کے لیے",
+                pay_pak: "صرف پاکستان کے لیے",
+                pay_jazz: "جاز کیش نمبر",
+                pay_acc_name: "اکاؤنٹ کا نام",
+                pay_copy: "کاپی",
+                price_title: "پریمیم قیمت",
+                price_orig: "اصل قیمت",
+                price_25: "25% ڈسکاؤنٹ",
+                price_applied: "پہلے سے اپلائی ہے!",
+                price_50: "50% ڈسکاؤنٹ",
+                price_invite: "دوست کو انوائٹ کریں",
+                rules_title: "قواعد و ضوابط",
+                rule_1_title: "قاعدہ 1: ڈیوائس لاک",
+                rule_1_text: "ایک پاس ورڈ صرف ایک موبائل پر چلے گا۔ شیئر نہیں ہو سکتا۔ ری سیٹ کرنے پر دوبارہ پیسے دینے ہوں گے۔",
+                rule_2_title: "قاعدہ 2: ری فنڈ نہیں",
+                rule_2_text: "پاس ورڈ ایکٹیو ہونے کے بعد پیسے واپس نہیں ہوں گے۔",
+                footer_title: "پیمنٹ کے بعد",
+                footer_text: "رسائی حاصل کرنے کے لیے اسکرین شاٹ بھیجیں۔",
+                footer_btn: "اسکرین شاٹ منتخب کریں",
+                footer_btn_select: "تصاویر منتخب کریں",
+                footer_btn_send: "{n} تصاویر بھیجیں",
+                toast_fallback: "آپ کا براؤزر تصاویر خود منسلک نہیں کر سکتا۔ چیٹ کھل رہی ہے، پیپر کلپ سے منسلک کریں۔",
+                toast_copied: "نمبر کاپی ہو گیا۔ رابطہ مانگے تو سرچ میں پیسٹ کریں۔",
+                toast_limit: "آپ زیادہ سے زیادہ 3 تصاویر منتخب کر سکتے ہیں۔",
+                footer_alt: "یا براہ راست چیٹ کھولیں:"
+            },
+            ar: {
+                header_sub: "حساب رئيسي آمن 100%",
+                features_title: "ميزات PBC",
+                feat_wallhack: "WallHack PBC",
+                feat_color: "Color Body PBC",
+                feat_grass: "No Grass PBC",
+                feat_water: "No Water PBC",
+                feat_smoke: "No Smoke PBC",
+                feat_tree: "Less Tree PBC",
+                feat_sky: "Black Sky PBC",
+                feat_antenna: "Antenna PBC",
+                feat_aim: "Aim iPhone PBC",
+                feat_fps: "Feels 120 FPS",
+                wallhack_title: "تفاصيل Wall-Hack",
+                wall_vis: "ظهور لون العدو.",
+                wall_cover: "الأعداء في الغطاء (أحمر)",
+                wall_open: "الأعداء في العراء (أخضر)",
+                wall_choice: "يمكنك أيضًا اختيار اللون الذي تريده.",
+                wall_warning_title: "إشعار آمن",
+                wall_warning_text: "إذا قال شخص ما إن إصلاح الوميض دائم ولا يحتاج إلى حيلة تشغيل وإيقاف البيانات، فهو بالتأكيد يكذب!",
+                pak_title: "ميزات ملف PAK",
+                pak_lua: "AimBot Lua File",
+                pak_pak: "Aimbot Pak File",
+                pak_esp: "Esp Location File",
+                pak_magic: "Magic Bullet File",
+                pak_assist: "Aim Assist File",
+                pay_title: "طرق الدفع",
+                pay_global: "عالمي",
+                pay_pak: "باكستان فقط",
+                pay_jazz: "رقم JazzCash",
+                pay_acc_name: "اسم الحساب",
+                pay_copy: "نسخ",
+                price_title: "أسعار البريميوم",
+                price_orig: "السعر الأصلي",
+                price_25: "خصم 25%",
+                price_applied: "مطبق بالفعل!",
+                price_50: "خصم 50%",
+                price_invite: "قم بدعوة صديق",
+                rules_title: "القواعد والسياسات",
+                rule_1_title: "القاعدة 1: قفل الجهاز",
+                rule_1_text: "كلمة مرور واحدة تعمل على هاتف واحد فقط. لا مشاركة. لا إعادة تعيين. إذا أعدت التعيين، ستدفع مرة أخرى.",
+                rule_2_title: "القاعدة 2: لا استرداد",
+                rule_2_text: "بمجرد تنشيط كلمة المرور، لا يمكن استرداد الأموال.",
+                footer_title: "بعد الدفع",
+                footer_text: "أرسل لقطة شاشة للحصول على وصولك.",
+                footer_btn: "حدد وأرسل لقطة الشاشة",
+                footer_btn_select: "حدد الصور",
+                footer_btn_send: "أرسل {n} صورة",
+                toast_fallback: "متصفحك لا يستطيع إرفاق الصور تلقائيًا. يتم فتح المحادثة، أرفقها بالمشبك.",
+                toast_copied: "تم نسخ الرقم. إذا طُلب منك جهة اتصال، الصقه في البحث.",
+                toast_limit: "يمكنك تحديد 3 صور كحد أقصى.",
+                footer_alt: "أو افتح المحادثة مباشرة:"
+            },
+            es: {
+                header_sub: "CUENTA PRINCIPAL 100% SEGURA",
+                features_title: "Funciones PBC",
+                feat_wallhack: "WallHack PBC",
+                feat_color: "Color Body PBC",
+                feat_grass: "No Grass PBC",
+                feat_water: "No Water PBC",
+                feat_smoke: "No Smoke PBC",
+                feat_tree: "Less Tree PBC",
+                feat_sky: "Black Sky PBC",
+                feat_antenna: "Antenna PBC",
+                feat_aim: "Aim iPhone PBC",
+                feat_fps: "Feels 120 FPS",
+                wallhack_title: "Detalles de Wall-Hack",
+                wall_vis: "Visibilidad del color del enemigo.",
+                wall_cover: "Enemigos cubiertos (Rojo)",
+                wall_open: "Enemigos al descubierto (Verde)",
+                wall_choice: "También puedes elegir el color que quieras.",
+                wall_warning_title: "AVISO SEGURO",
+                wall_warning_text: "Si alguien dice que el arreglo de parpadeo es permanente y no necesita el truco de encender y apagar los datos, ¡definitivamente está mintiendo!",
+                pak_title: "Funciones de Archivo PAK",
+                pak_lua: "AimBot Lua File",
+                pak_pak: "Aimbot Pak File",
+                pak_esp: "Esp Location File",
+                pak_magic: "Magic Bullet File",
+                pak_assist: "Aim Assist File",
+                pay_title: "Métodos de Pago",
+                pay_global: "Mundial",
+                pay_pak: "Solo Pakistán",
+                pay_jazz: "Número de JazzCash",
+                pay_acc_name: "Nombre de la cuenta",
+                pay_copy: "Copiar",
+                price_title: "Precios Premium",
+                price_orig: "Precio Original",
+                price_25: "Descuento del 25%",
+                price_applied: "¡Ya aplicado!",
+                price_50: "Descuento del 50%",
+                price_invite: "Invita a un amigo",
+                rules_title: "Reglas y Políticas",
+                rule_1_title: "Regla 1: Bloqueo de Dispositivo",
+                rule_1_text: "Una contraseña funciona en un solo móvil. No se comparte. No se reinicia. Si reinicias, vuelves a pagar.",
+                rule_2_title: "Regla 2: Sin Reembolsos",
+                rule_2_text: "Una vez activada la contraseña, el dinero no se puede reembolsar.",
+                footer_title: "DESPUÉS DEL PAGO",
+                footer_text: "Envía la captura de pantalla para obtener tu acceso.",
+                footer_btn: "Seleccionar y Enviar Captura",
+                footer_btn_select: "Seleccionar Imágenes",
+                footer_btn_send: "Enviar {n} Imagen(es)",
+                toast_fallback: "Tu navegador no puede adjuntar imágenes automáticamente. Abriendo el chat, adjúntalas con el clip.",
+                toast_copied: "Número copiado. Si pide un contacto, pégalo en el buscador.",
+                toast_limit: "Puedes seleccionar un máximo de 3 imágenes.",
+                footer_alt: "O abre el chat directamente:"
+            }
+        };
+
+        let currentLang = 'en';
+        let selectedFiles = []; // Array to store up to 3 files
+
+        const shareBtn = document.getElementById('shareBtn');
+        const fileInput = document.getElementById('screenshotInput');
+        const toast = document.getElementById('toast');
+        const previewContainer = document.getElementById('previewContainer');
+        let toastTimeout;
+
+        /* ======================================================================
+           2. LANGUAGE SWITCHER LOGIC
+           ====================================================================== */
+        function changeLanguage(lang, btnElement) {
+            if (lang === currentLang) return;
+            currentLang = lang;
+            
+            // UI Update
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // Fade out container
+            const container = document.getElementById('main-container');
+            container.classList.add('lang-fade');
+
+            setTimeout(() => {
+                // Set Direction (RTL for Urdu/Arabic)
+                if (lang === 'ur' || lang === 'ar') {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.body.style.fontFamily = "'Noto Nastaliq Urdu', sans-serif";
+                } else {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.body.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+                }
+
+                // Update Text
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        el.textContent = translations[lang][key];
+                    }
+                });
+
+                // Update Button Text based on selected files
+                if (window.updateButtonText) window.updateButtonText();
+
+                // Fade back in
+                container.classList.remove('lang-fade');
+            }, 300); 
+        }
+
+        /* ======================================================================
+           3. SCROLL ANIMATIONS & NATIVE FEEL
+           ====================================================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Haptic Feedback
+            const vibrate = (ms) => {
+                if ('vibrate' in navigator) {
+                    try { navigator.vibrate(ms); } catch (e) {}
+                }
+            };
+
+            // Intersection Observer for Cards
+            const observerOptions = {
+                root: document.querySelector('.main-scroll-area'),
+                rootMargin: '0px',
+                threshold: 0.15 
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // reveal once; no re-trigger on layout shifts
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                observer.observe(el);
+            });
+
+            /* ======================================================================
+               4. CLIPBOARD & EXTERNAL ACTIONS
+               ====================================================================== */
+            window.copyToClipboard = function(text, btnElement) {
+                vibrate(40);
+                
+                const showSuccess = () => {
+                    const originalHTML = btnElement.innerHTML;
+                    btnElement.innerHTML = currentLang === 'ur' || currentLang === 'ar' ? 'کاپی ہو گیا!' : 'Copied!';
+                    btnElement.style.borderColor = "var(--accent-green)";
+                    btnElement.style.background = "rgba(0, 255, 136, 0.1)";
+                    btnElement.style.color = "var(--accent-green)";
+                    
+                    setTimeout(() => {
+                        btnElement.innerHTML = originalHTML;
+                        btnElement.style.borderColor = "";
+                        btnElement.style.background = "";
+                        btnElement.style.color = "";
+                    }, 2000);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text, showSuccess));
+                } else {
+                    fallbackCopy(text, showSuccess);
+                }
+            };
+
+            function fallbackCopy(text, callback) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.top = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    callback();
+                } catch (err) { console.error('Fallback copy failed', err); }
+                document.body.removeChild(textArea);
+            }
+
+            /* ======================================================================
+               5. FILE PICKER, PREVIEW & SHARE LOGIC
+               ====================================================================== */
+            
+            // Show Toast Notification
+            window.showToast = function(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }
+
+            const MAX_FILES = 3;
+            const WA_NUMBER = '923041891897'; // +92 304 1891897
+            const SHARE_TEXT = 'Hello, here is my payment screenshot for PUBG PREMIUM 4.7.';
+            const counterEl = document.getElementById('previewCounter');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            const urlCache = new Map(); // File -> object URL (created once, revoked on removal)
+            let busy = false;
+
+            const t = (key) => (translations[currentLang] && translations[currentLang][key]) || translations['en'][key];
+            const fileKey = (f) => `${f.name}|${f.size}|${f.lastModified}`;
+            const urlFor = (f) => {
+                if (!urlCache.has(f)) urlCache.set(f, URL.createObjectURL(f));
+                return urlCache.get(f);
+            };
+            const releaseUrl = (f) => {
+                const u = urlCache.get(f);
+                if (u) { URL.revokeObjectURL(u); urlCache.delete(f); }
+            };
+
+            // Update Button Text
+            window.updateButtonText = updateButtonText;
+            function updateButtonText() {
+                if (busy) return;
+                if (selectedFiles.length === 0) {
+                    shareBtn.innerText = t('footer_btn_select');
+                } else {
+                    shareBtn.innerText = t('footer_btn_send').replace('{n}', selectedFiles.length);
+                }
+                
+            }
+
+            // Lightbox
+            function openLightbox(file) {
+                lightboxImg.src = urlFor(file);
+                lightbox.classList.add('show');
+            }
+            lightbox.addEventListener('click', () => lightbox.classList.remove('show'));
+
+            // Render exactly 3 stable slots. Nodes are reused, so already-loaded
+            // thumbnails are never rebuilt (that rebuild was a flicker source).
+            const slots = [];
+            for (let i = 0; i < MAX_FILES; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'preview-slot empty';
+                previewContainer.appendChild(slot);
+                slots.push({ el: slot, file: null });
+            }
+
+            function renderPreviews(newlyAddedFrom = -1) {
+                slots.forEach((s, i) => {
+                    const file = selectedFiles[i] || null;
+                    if (s.file === file && file !== null) return; // unchanged
+                    s.file = file;
+                    s.el.innerHTML = '';
+                    s.el.onclick = null;
+                    s.el.classList.remove('enter');
+
+                    if (file) {
+                        s.el.className = 'preview-slot filled' + (i >= newlyAddedFrom && newlyAddedFrom >= 0 ? ' enter' : '');
+                        const img = document.createElement('img');
+                        img.decoding = 'async';
+                        img.alt = 'Screenshot ' + (i + 1);
+                        img.src = urlFor(file);
+
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'preview-remove';
+                        btn.setAttribute('aria-label', 'Remove image');
+                        btn.textContent = '✕';
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            vibrate(20);
+                            const idx = selectedFiles.indexOf(file);
+                            if (idx > -1) selectedFiles.splice(idx, 1);
+                            releaseUrl(file);
+                            renderPreviews();
+                        });
+
+                        s.el.appendChild(img);
+                        s.el.appendChild(btn);
+                        s.el.onclick = () => openLightbox(file);
+                    } else {
+                        s.el.className = 'preview-slot empty';
+                        s.el.textContent = '+';
+                        s.el.onclick = () => { vibrate(30); openPicker(); };
+                    }
+                });
+
+                counterEl.textContent = selectedFiles.length + ' / ' + MAX_FILES;
+                counterEl.classList.toggle('full', selectedFiles.length === MAX_FILES);
+                updateButtonText();
+            }
+
+            function openPicker() {
+                if (selectedFiles.length >= MAX_FILES) { showToast(t('toast_limit')); return; }
+                fileInput.click();
+            }
+
+            // Handle Main Button Click (Select vs Send)
+            window.handleMainAction = function(event) {
+                if (event) event.preventDefault();
+                vibrate(30);
+                if (busy) return;
+                if (selectedFiles.length === 0) openPicker();
+                else sendToWhatsApp();
+            };
+
+            // Handle File Selection (hard cap of 3, images only, no duplicates)
+            fileInput.addEventListener('change', (e) => {
+                const picked = Array.from(e.target.files || []);
+                e.target.value = ''; // allow re-selecting the same file
+                if (picked.length === 0) return;
+
+                const known = new Set(selectedFiles.map(fileKey));
+                const fresh = picked.filter(f => (!f.type || f.type.startsWith('image/')) && !known.has(fileKey(f)));
+
+                const room = MAX_FILES - selectedFiles.length;
+                if (picked.length > room) showToast(t('toast_limit'));
+
+                const firstNew = selectedFiles.length;
+                selectedFiles = selectedFiles.concat(fresh.slice(0, Math.max(room, 0))).slice(0, MAX_FILES);
+                renderPreviews(firstNew);
+            });
+
+            /* ----------------------------------------------------------------
+               WhatsApp hand-off
+               WhatsApp's URI schemes (wa.me / whatsapp://send) can pre-fill the
+               recipient and text, but they have NO parameter for attachments, and
+               a web page cannot pass file:// or content:// URIs to another app.
+               So the direct flow is:
+                 1. save the (max 3) images to the device in one tap,
+                 2. open the chat with +923041891897 straight away (no share sheet),
+                 3. the user taps the paperclip -> Gallery; the images are the
+                    newest files, so they're right at the top.
+               The only true auto-attach path is the system share sheet, kept as
+               the small optional link below the button.
+               ---------------------------------------------------------------- */
+            const isAndroid = /android/i.test(navigator.userAgent);
+            const WA_PKGS = { messenger: 'com.whatsapp', business: 'com.whatsapp.w4b' };
+
+            function setBusy(on, label) {
+                busy = on;
+                shareBtn.classList.toggle('loading', on);
+                if (on) shareBtn.innerText = label; else updateButtonText();
+            }
+
+            function copyNumber() {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText('+' + WA_NUMBER).catch(() => {});
+                    }
+                } catch (e) {}
+            }
+
+            // Opens the chat with +923041891897 directly (no contact picker).
+            // On Android the intent targets the chosen app; elsewhere wa.me is used.
+            function openDirectChat(kind) {
+                const text = encodeURIComponent(SHARE_TEXT);
+                const web = `https://wa.me/${WA_NUMBER}?text=${text}`;
+                if (isAndroid && WA_PKGS[kind]) {
+                    window.location.href =
+                        `intent://send/?phone=${WA_NUMBER}&text=${text}#Intent;scheme=whatsapp;package=${WA_PKGS[kind]};` +
+                        `S.browser_fallback_url=${encodeURIComponent(web)};end`;
+                } else {
+                    window.location.href = web;
+                }
+            }
+
+            // Main button: images are attached through the system share sheet.
+            // Nothing is downloaded. The user picks WhatsApp or WhatsApp Business.
+            async function sendToWhatsApp() {
+                const files = selectedFiles.slice(0, MAX_FILES);
+                if (files.length === 0) return;
+
+                if (navigator.canShare && navigator.canShare({ files })) {
+                    setBusy(true, '…');
+                    copyNumber(); // so the number can be pasted into WhatsApp's search box
+                    showToast(t('toast_copied'));
+                    try {
+                        await navigator.share({ files, text: SHARE_TEXT });
+                    } catch (err) { console.log('Share cancelled', err); }
+                    setBusy(false);
+                } else {
+                    // Browser can't share files: open the chat only, no downloads
+                    showToast(t('toast_fallback'));
+                    setTimeout(() => openDirectChat('messenger'), 1200);
+                }
+            }
+
+            // Secondary buttons: open the chat with the number directly (no images)
+            document.getElementById('chatMessengerBtn').addEventListener('click', () => { vibrate(30); openDirectChat('messenger'); });
+            document.getElementById('chatBusinessBtn').addEventListener('click', () => { vibrate(30); openDirectChat('business'); });
+
+            // Initial Render
+            renderPreviews();
+        });
+    </script>
+</body>
+</html>
