@@ -84,8 +84,7 @@
             -webkit-overflow-scrolling: touch; 
         }
 
-        /* Fixed background lives on its own GPU layer (background-attachment:fixed
-           repaints on every scroll frame on mobile and causes tearing). */
+        /* Fixed background lives on its own GPU layer */
         body::before {
             content: "";
             position: fixed;
@@ -236,7 +235,6 @@
             
             opacity: 0;
             transform: translate3d(0, 40px, 0) scale(0.98);
-            /* Only animate compositor-friendly properties (never "all") */
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
@@ -249,7 +247,7 @@
         .card.active {
             opacity: 1;
             transform: translate3d(0, 0, 0) scale(1);
-            will-change: auto; /* release the layer once settled */
+            will-change: auto; 
         }
 
         .card .pricing-container,
@@ -480,7 +478,7 @@
         }
 
         /* ==========================================================================
-           8. FOOTER CTA, BUTTON STATES & IMAGE PREVIEWS
+           8. FOOTER CTA & BUTTON
            ========================================================================== */
         .footer-cta {
             text-align: center;
@@ -491,155 +489,13 @@
             border-radius: var(--radius-xl);
         }
 
-        /* Image Previews Layout (3 fixed slots, no layout jump) */
-        .preview-wrap { margin-bottom: 20px; }
-
-        .preview-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 320px;
-            margin: 0 auto 8px;
-            transform: translateZ(0);
-        }
-
-        .preview-slot {
-            position: relative;
-            aspect-ratio: 1 / 1;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.02);
-            border: 2px dashed rgba(255, 255, 255, 0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-            -webkit-mask-image: -webkit-radial-gradient(white, black); /* iOS rounded-clip fix */
-        }
-
-        .preview-slot.empty:active {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .preview-slot.empty.locked { opacity: 0.35; pointer-events: none; }
-
-        .preview-slot.filled {
-            border: 2px solid var(--accent-cyan);
-            box-shadow: 0 4px 10px rgba(0, 229, 255, 0.2);
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .preview-slot.filled.enter { animation: popIn 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-
-        .preview-slot img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            -webkit-user-drag: none;
-            transform: translateZ(0);
-        }
-
-        .preview-remove {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .preview-remove:active { background: var(--accent-red); }
-
-        .preview-counter {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-        }
-
-        .preview-counter.full { color: var(--accent-green); }
-
-        .alt-share {
-            display: inline-block;
-            margin-top: 16px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-decoration: underline;
-            text-underline-offset: 3px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: inherit;
-        }
-
-        .alt-share[hidden] { display: none; }
-
-        .direct-row { margin-top: 18px; }
-        .direct-label { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
-        .direct-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .direct-btn {
-            font-family: inherit; font-size: 13px; font-weight: 700;
-            color: var(--text-main); background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border-hover); border-radius: 40px;
-            padding: 9px 16px; cursor: pointer; transition: background-color 0.2s;
-        }
-        .direct-btn:active { background: rgba(255,255,255,0.14); }
-
-        /* Lightbox */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 10000;
-            background: rgba(5, 8, 15, 0.92);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-            transform: translateZ(0);
-        }
-
-        .lightbox.show { opacity: 1; pointer-events: auto; }
-
-        .lightbox img {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: var(--radius-md);
-            object-fit: contain;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.6); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         .btn-primary {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            background: linear-gradient(135deg, var(--accent-cyan), #0077B6);
-            color: var(--bg-dark);
+            background: linear-gradient(135deg, #25D366, #128C7E); /* WhatsApp Green */
+            color: #fff;
             font-family: 'Outfit', sans-serif;
             font-size: 16px;
             font-weight: 800;
@@ -652,57 +508,10 @@
             max-width: 320px;
             margin: 0 auto;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
         .btn-primary:active { transform: scale(0.98); }
-
-        /* Button Loading State */
-        .btn-primary.loading {
-            opacity: 0.8;
-            pointer-events: none;
-            background: linear-gradient(135deg, #0077B6, #005f8f);
-        }
-
-        .btn-primary.loading::before {
-            content: "";
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--bg-dark);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* Custom Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: calc(30px + env(safe-area-inset-bottom, 0px));
-            left: 50%;
-            transform: translate3d(-50%, 150%, 0);
-            opacity: 0;
-            pointer-events: none;
-            will-change: transform, opacity;
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            -webkit-backdrop-filter: var(--glass-blur);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-            z-index: 9999;
-            text-align: center;
-            width: max-content;
-            max-width: 90%;
-        }
-
-        .toast.show { transform: translate3d(-50%, 0, 0); opacity: 1; }
 
         @media (min-width: 600px) {
             .payment-grid { grid-template-columns: 1fr 1fr; }
@@ -715,15 +524,6 @@
     </style>
 </head>
 <body oncontextmenu="return false;">
-
-    <!-- Hidden File Input (Enabled for Multiple Files) -->
-    <input type="file" id="screenshotInput" accept="image/*" multiple style="display: none;">
-
-    <!-- Custom Toast -->
-    <div id="toast" class="toast">Message</div>
-
-    <!-- Image Lightbox -->
-    <div id="lightbox" class="lightbox"><img id="lightboxImg" alt=""></div>
 
     <!-- MAIN SCROLL AREA -->
     <div class="main-scroll-area">
@@ -1005,26 +805,13 @@
                 </div>
             </div>
 
-            <!-- FOOTER -->
+            <!-- FOOTER (Direct WhatsApp) -->
             <div class="footer-cta reveal">
                 <h3 data-i18n="footer_title" style="color: var(--accent-cyan); font-family: 'Outfit'; font-size: 18px; margin-bottom: 10px;">AFTER PAYMENT</h3>
                 <p data-i18n="footer_text" style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Send screenshot proof to get your access.</p>
                 
-                <!-- Image Preview Container (max 3) -->
-                <div class="preview-wrap">
-                    <div id="previewContainer" class="preview-container"></div>
-                    <div id="previewCounter" class="preview-counter">0 / 3</div>
-                </div>
-                
-                <!-- Main Action Button -->
-                <a href="#" class="btn-primary" id="shareBtn" onclick="handleMainAction(event)" data-i18n="footer_btn">Select Images</a>
-                <div class="direct-row">
-                    <div class="direct-label" data-i18n="footer_alt">Or open the chat directly:</div>
-                    <div class="direct-btns">
-                        <button type="button" class="direct-btn" id="chatMessengerBtn">WhatsApp</button>
-                        <button type="button" class="direct-btn" id="chatBusinessBtn">WhatsApp Business</button>
-                    </div>
-                </div>
+                <!-- Direct WhatsApp Button -->
+                <a href="https://wa.me/923041891897?text=*Hello%2C%20here%20is%20my%20payment%20screenshot%20for%20PUBG%20PREMIUM%204.7*" target="_blank" class="btn-primary" data-i18n="footer_btn">Send Payment ScreenShot</a>
             </div>
 
         </div>
@@ -1098,13 +885,7 @@
                 rule_2_text: "Once the password is activated, the money cannot be refunded.",
                 footer_title: "AFTER PAYMENT",
                 footer_text: "Send screenshot proof to get your access.",
-                footer_btn: "Select & Send Screenshot",
-                footer_btn_select: "Select Images",
-                footer_btn_send: "Send {n} Image(s)",
-                toast_fallback: "Your browser cannot attach images automatically. Opening the chat, please attach them with the paperclip.",
-                toast_copied: "Number copied. If asked for a contact, paste it in the search box.",
-                toast_limit: "You can select a maximum of 3 images.",
-                footer_alt: "Or open the chat directly:"
+                footer_btn: "Send Payment ScreenShot"
             },
             hi: {
                 header_sub: "100% SAFE MAIN ACCOUNT",
@@ -1151,13 +932,7 @@
                 rule_2_text: "Password activate hone ke baad paise wapas nahi milenge.",
                 footer_title: "PAYMENT KE BAAD",
                 footer_text: "Access paane ke liye screenshot bhejein.",
-                footer_btn: "Select & Send Screenshot",
-                footer_btn_select: "Images Select Karein",
-                footer_btn_send: "{n} Image(s) Send Karein",
-                toast_fallback: "Aapka browser images auto-attach nahi kar sakta. Chat khul rahi hai, paperclip se attach karein.",
-                toast_copied: "Number copy ho gaya. Contact poocha jaye to search mein paste karein.",
-                toast_limit: "Aap maximum 3 images select kar sakte hain.",
-                footer_alt: "Ya seedha chat kholein:"
+                footer_btn: "Payment Screenshot Bhejein"
             },
             ur: {
                 header_sub: "100% محفوظ مین اکاؤنٹ",
@@ -1204,13 +979,7 @@
                 rule_2_text: "پاس ورڈ ایکٹیو ہونے کے بعد پیسے واپس نہیں ہوں گے۔",
                 footer_title: "پیمنٹ کے بعد",
                 footer_text: "رسائی حاصل کرنے کے لیے اسکرین شاٹ بھیجیں۔",
-                footer_btn: "اسکرین شاٹ منتخب کریں",
-                footer_btn_select: "تصاویر منتخب کریں",
-                footer_btn_send: "{n} تصاویر بھیجیں",
-                toast_fallback: "آپ کا براؤزر تصاویر خود منسلک نہیں کر سکتا۔ چیٹ کھل رہی ہے، پیپر کلپ سے منسلک کریں۔",
-                toast_copied: "نمبر کاپی ہو گیا۔ رابطہ مانگے تو سرچ میں پیسٹ کریں۔",
-                toast_limit: "آپ زیادہ سے زیادہ 3 تصاویر منتخب کر سکتے ہیں۔",
-                footer_alt: "یا براہ راست چیٹ کھولیں:"
+                footer_btn: "پیمنٹ اسکرین شاٹ بھیجیں"
             },
             ar: {
                 header_sub: "حساب رئيسي آمن 100%",
@@ -1257,13 +1026,7 @@
                 rule_2_text: "بمجرد تنشيط كلمة المرور، لا يمكن استرداد الأموال.",
                 footer_title: "بعد الدفع",
                 footer_text: "أرسل لقطة شاشة للحصول على وصولك.",
-                footer_btn: "حدد وأرسل لقطة الشاشة",
-                footer_btn_select: "حدد الصور",
-                footer_btn_send: "أرسل {n} صورة",
-                toast_fallback: "متصفحك لا يستطيع إرفاق الصور تلقائيًا. يتم فتح المحادثة، أرفقها بالمشبك.",
-                toast_copied: "تم نسخ الرقم. إذا طُلب منك جهة اتصال، الصقه في البحث.",
-                toast_limit: "يمكنك تحديد 3 صور كحد أقصى.",
-                footer_alt: "أو افتح المحادثة مباشرة:"
+                footer_btn: "أرسل لقطة شاشة الدفع"
             },
             es: {
                 header_sub: "CUENTA PRINCIPAL 100% SEGURA",
@@ -1310,24 +1073,11 @@
                 rule_2_text: "Una vez activada la contraseña, el dinero no se puede reembolsar.",
                 footer_title: "DESPUÉS DEL PAGO",
                 footer_text: "Envía la captura de pantalla para obtener tu acceso.",
-                footer_btn: "Seleccionar y Enviar Captura",
-                footer_btn_select: "Seleccionar Imágenes",
-                footer_btn_send: "Enviar {n} Imagen(es)",
-                toast_fallback: "Tu navegador no puede adjuntar imágenes automáticamente. Abriendo el chat, adjúntalas con el clip.",
-                toast_copied: "Número copiado. Si pide un contacto, pégalo en el buscador.",
-                toast_limit: "Puedes seleccionar un máximo de 3 imágenes.",
-                footer_alt: "O abre el chat directamente:"
+                footer_btn: "Enviar captura de pago"
             }
         };
 
         let currentLang = 'en';
-        let selectedFiles = []; // Array to store up to 3 files
-
-        const shareBtn = document.getElementById('shareBtn');
-        const fileInput = document.getElementById('screenshotInput');
-        const toast = document.getElementById('toast');
-        const previewContainer = document.getElementById('previewContainer');
-        let toastTimeout;
 
         /* ======================================================================
            2. LANGUAGE SWITCHER LOGIC
@@ -1362,9 +1112,6 @@
                     }
                 });
 
-                // Update Button Text based on selected files
-                if (window.updateButtonText) window.updateButtonText();
-
                 // Fade back in
                 container.classList.remove('lang-fade');
             }, 300); 
@@ -1393,7 +1140,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target); // reveal once; no re-trigger on layout shifts
+                        observer.unobserve(entry.target); // reveal once
                     }
                 });
             }, observerOptions);
@@ -1403,7 +1150,7 @@
             });
 
             /* ======================================================================
-               4. CLIPBOARD & EXTERNAL ACTIONS
+               4. CLIPBOARD
                ====================================================================== */
             window.copyToClipboard = function(text, btnElement) {
                 vibrate(40);
@@ -1445,216 +1192,6 @@
                 document.body.removeChild(textArea);
             }
 
-            /* ======================================================================
-               5. FILE PICKER, PREVIEW & SHARE LOGIC
-               ====================================================================== */
-            
-            // Show Toast Notification
-            window.showToast = function(message) {
-                toast.textContent = message;
-                toast.classList.add('show');
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 4000);
-            }
-
-            const MAX_FILES = 3;
-            const WA_NUMBER = '923041891897'; // +92 304 1891897
-            const SHARE_TEXT = 'Hello, here is my payment screenshot for PUBG PREMIUM 4.7.';
-            const counterEl = document.getElementById('previewCounter');
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightboxImg');
-            const urlCache = new Map(); // File -> object URL (created once, revoked on removal)
-            let busy = false;
-
-            const t = (key) => (translations[currentLang] && translations[currentLang][key]) || translations['en'][key];
-            const fileKey = (f) => `${f.name}|${f.size}|${f.lastModified}`;
-            const urlFor = (f) => {
-                if (!urlCache.has(f)) urlCache.set(f, URL.createObjectURL(f));
-                return urlCache.get(f);
-            };
-            const releaseUrl = (f) => {
-                const u = urlCache.get(f);
-                if (u) { URL.revokeObjectURL(u); urlCache.delete(f); }
-            };
-
-            // Update Button Text
-            window.updateButtonText = updateButtonText;
-            function updateButtonText() {
-                if (busy) return;
-                if (selectedFiles.length === 0) {
-                    shareBtn.innerText = t('footer_btn_select');
-                } else {
-                    shareBtn.innerText = t('footer_btn_send').replace('{n}', selectedFiles.length);
-                }
-                
-            }
-
-            // Lightbox
-            function openLightbox(file) {
-                lightboxImg.src = urlFor(file);
-                lightbox.classList.add('show');
-            }
-            lightbox.addEventListener('click', () => lightbox.classList.remove('show'));
-
-            // Render exactly 3 stable slots. Nodes are reused, so already-loaded
-            // thumbnails are never rebuilt (that rebuild was a flicker source).
-            const slots = [];
-            for (let i = 0; i < MAX_FILES; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'preview-slot empty';
-                previewContainer.appendChild(slot);
-                slots.push({ el: slot, file: null });
-            }
-
-            function renderPreviews(newlyAddedFrom = -1) {
-                slots.forEach((s, i) => {
-                    const file = selectedFiles[i] || null;
-                    if (s.file === file && file !== null) return; // unchanged
-                    s.file = file;
-                    s.el.innerHTML = '';
-                    s.el.onclick = null;
-                    s.el.classList.remove('enter');
-
-                    if (file) {
-                        s.el.className = 'preview-slot filled' + (i >= newlyAddedFrom && newlyAddedFrom >= 0 ? ' enter' : '');
-                        const img = document.createElement('img');
-                        img.decoding = 'async';
-                        img.alt = 'Screenshot ' + (i + 1);
-                        img.src = urlFor(file);
-
-                        const btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.className = 'preview-remove';
-                        btn.setAttribute('aria-label', 'Remove image');
-                        btn.textContent = '✕';
-                        btn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            vibrate(20);
-                            const idx = selectedFiles.indexOf(file);
-                            if (idx > -1) selectedFiles.splice(idx, 1);
-                            releaseUrl(file);
-                            renderPreviews();
-                        });
-
-                        s.el.appendChild(img);
-                        s.el.appendChild(btn);
-                        s.el.onclick = () => openLightbox(file);
-                    } else {
-                        s.el.className = 'preview-slot empty';
-                        s.el.textContent = '+';
-                        s.el.onclick = () => { vibrate(30); openPicker(); };
-                    }
-                });
-
-                counterEl.textContent = selectedFiles.length + ' / ' + MAX_FILES;
-                counterEl.classList.toggle('full', selectedFiles.length === MAX_FILES);
-                updateButtonText();
-            }
-
-            function openPicker() {
-                if (selectedFiles.length >= MAX_FILES) { showToast(t('toast_limit')); return; }
-                fileInput.click();
-            }
-
-            // Handle Main Button Click (Select vs Send)
-            window.handleMainAction = function(event) {
-                if (event) event.preventDefault();
-                vibrate(30);
-                if (busy) return;
-                if (selectedFiles.length === 0) openPicker();
-                else sendToWhatsApp();
-            };
-
-            // Handle File Selection (hard cap of 3, images only, no duplicates)
-            fileInput.addEventListener('change', (e) => {
-                const picked = Array.from(e.target.files || []);
-                e.target.value = ''; // allow re-selecting the same file
-                if (picked.length === 0) return;
-
-                const known = new Set(selectedFiles.map(fileKey));
-                const fresh = picked.filter(f => (!f.type || f.type.startsWith('image/')) && !known.has(fileKey(f)));
-
-                const room = MAX_FILES - selectedFiles.length;
-                if (picked.length > room) showToast(t('toast_limit'));
-
-                const firstNew = selectedFiles.length;
-                selectedFiles = selectedFiles.concat(fresh.slice(0, Math.max(room, 0))).slice(0, MAX_FILES);
-                renderPreviews(firstNew);
-            });
-
-            /* ----------------------------------------------------------------
-               WhatsApp hand-off
-               WhatsApp's URI schemes (wa.me / whatsapp://send) can pre-fill the
-               recipient and text, but they have NO parameter for attachments, and
-               a web page cannot pass file:// or content:// URIs to another app.
-               So the direct flow is:
-                 1. save the (max 3) images to the device in one tap,
-                 2. open the chat with +923041891897 straight away (no share sheet),
-                 3. the user taps the paperclip -> Gallery; the images are the
-                    newest files, so they're right at the top.
-               The only true auto-attach path is the system share sheet, kept as
-               the small optional link below the button.
-               ---------------------------------------------------------------- */
-            const isAndroid = /android/i.test(navigator.userAgent);
-            const WA_PKGS = { messenger: 'com.whatsapp', business: 'com.whatsapp.w4b' };
-
-            function setBusy(on, label) {
-                busy = on;
-                shareBtn.classList.toggle('loading', on);
-                if (on) shareBtn.innerText = label; else updateButtonText();
-            }
-
-            function copyNumber() {
-                try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText('+' + WA_NUMBER).catch(() => {});
-                    }
-                } catch (e) {}
-            }
-
-            // Opens the chat with +923041891897 directly (no contact picker).
-            // On Android the intent targets the chosen app; elsewhere wa.me is used.
-            function openDirectChat(kind) {
-                const text = encodeURIComponent(SHARE_TEXT);
-                const web = `https://wa.me/${WA_NUMBER}?text=${text}`;
-                if (isAndroid && WA_PKGS[kind]) {
-                    window.location.href =
-                        `intent://send/?phone=${WA_NUMBER}&text=${text}#Intent;scheme=whatsapp;package=${WA_PKGS[kind]};` +
-                        `S.browser_fallback_url=${encodeURIComponent(web)};end`;
-                } else {
-                    window.location.href = web;
-                }
-            }
-
-            // Main button: images are attached through the system share sheet.
-            // Nothing is downloaded. The user picks WhatsApp or WhatsApp Business.
-            async function sendToWhatsApp() {
-                const files = selectedFiles.slice(0, MAX_FILES);
-                if (files.length === 0) return;
-
-                if (navigator.canShare && navigator.canShare({ files })) {
-                    setBusy(true, '…');
-                    copyNumber(); // so the number can be pasted into WhatsApp's search box
-                    showToast(t('toast_copied'));
-                    try {
-                        await navigator.share({ files, text: SHARE_TEXT });
-                    } catch (err) { console.log('Share cancelled', err); }
-                    setBusy(false);
-                } else {
-                    // Browser can't share files: open the chat only, no downloads
-                    showToast(t('toast_fallback'));
-                    setTimeout(() => openDirectChat('messenger'), 1200);
-                }
-            }
-
-            // Secondary buttons: open the chat with the number directly (no images)
-            document.getElementById('chatMessengerBtn').addEventListener('click', () => { vibrate(30); openDirectChat('messenger'); });
-            document.getElementById('chatBusinessBtn').addEventListener('click', () => { vibrate(30); openDirectChat('business'); });
-
-            // Initial Render
-            renderPreviews();
         });
     </script>
 </body>
