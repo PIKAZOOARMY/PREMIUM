@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="PIKAZOO Premium Mod Menu">
+    <meta name="color-scheme" content="dark">
     <title>PIKAZOO PREMIUM | 4.7</title>
     
     <!-- ======================================================================
@@ -35,8 +36,13 @@
             --accent-green: #00FF88;
             --accent-green-glow: rgba(0, 255, 136, 0.3);
             
+            /* Red kept for Wallhack indicators */
             --accent-red: #FF3366;
             --accent-red-glow: rgba(255, 51, 102, 0.4);
+
+            /* Pink added for the Demo Card */
+            --accent-pink: #FF1493;
+            --accent-pink-glow: rgba(255, 20, 147, 0.4);
             
             --accent-purple: #A855F7;
             --accent-purple-glow: rgba(168, 85, 247, 0.3);
@@ -103,6 +109,8 @@
         [dir="rtl"] .list-item { flex-direction: row-reverse; text-align: right; }
         [dir="rtl"] .payment-row { flex-direction: row-reverse; }
         [dir="rtl"] .rule-card { border-left: none; border-right: 4px solid var(--accent-purple); border-radius: var(--radius-md) 0 0 var(--radius-md); }
+        [dir="rtl"] .card-header h2 { font-family: 'Noto Nastaliq Urdu', sans-serif; font-size: 18px; }
+        [dir="rtl"] .color-indicator { margin-right: 0; margin-left: 8px; }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; } 
 
@@ -184,7 +192,6 @@
             position: relative;
             z-index: 1;
             transition: opacity 0.3s ease, transform 0.3s ease;
-            will-change: opacity, transform;
         }
 
         .container.lang-fade {
@@ -263,6 +270,8 @@
         .card.theme-cyan { border-top: 2px solid var(--accent-cyan); }
         .card.theme-purple { border-top: 2px solid var(--accent-purple); }
         .card.theme-gold { border-top: 2px solid var(--accent-gold); }
+        /* UPDATED TO PINK */
+        .card.theme-pink { border-top: 2px solid var(--accent-pink); }
 
         .card-header {
             display: flex;
@@ -285,6 +294,8 @@
         .theme-cyan .card-header h2 { color: var(--accent-cyan); }
         .theme-purple .card-header h2 { color: var(--accent-purple); }
         .theme-gold .card-header h2 { color: var(--accent-gold); }
+        /* UPDATED TO PINK */
+        .theme-pink .card-header h2 { color: var(--accent-pink); }
 
         .card-body {
             display: flex;
@@ -341,6 +352,8 @@
         .theme-cyan .icon-glow { background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); }
         .theme-purple .icon-glow { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
         .theme-gold .icon-glow { background: var(--accent-gold); box-shadow: 0 0 15px var(--accent-gold); }
+        /* UPDATED TO PINK */
+        .theme-pink .icon-glow { background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
 
         .icon-svg {
             position: relative;
@@ -358,6 +371,8 @@
         .theme-cyan .icon-svg { stroke: var(--accent-cyan); filter: drop-shadow(0 5px 5px rgba(0, 229, 255, 0.3)); }
         .theme-purple .icon-svg { stroke: var(--accent-purple); filter: drop-shadow(0 5px 5px rgba(168, 85, 247, 0.3)); }
         .theme-gold .icon-svg { stroke: var(--accent-gold); filter: drop-shadow(0 5px 5px rgba(255, 215, 0, 0.3)); }
+        /* UPDATED TO PINK */
+        .theme-pink .icon-svg { stroke: var(--accent-pink); filter: drop-shadow(0 5px 5px var(--accent-pink-glow)); }
 
         /* ==========================================================================
            7. SPECIFIC CONTENT STYLES
@@ -483,6 +498,7 @@
         .footer-cta {
             text-align: center;
             padding: 30px 20px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); /* Safe Area Fix */
             margin-bottom: 20px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
@@ -513,6 +529,31 @@
 
         .btn-primary:active { transform: scale(0.98); }
 
+        /* --- NEW DEMO CARD BUTTON STYLES (iOS Rounded, Green Text/Border) --- */
+        .btn-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(0, 255, 136, 0.1); /* Halka Green Background */
+            border: 1px solid var(--accent-green); /* Green Border */
+            color: var(--accent-green); /* Green Text */
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 16px 20px;
+            border-radius: 50px; /* iOS Rounded Pill Shape */
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.15); /* Green Glow */
+            letter-spacing: 0.5px;
+        }
+
+        .btn-demo:active { transform: scale(0.98); }
+
         @media (min-width: 600px) {
             .payment-grid { grid-template-columns: 1fr 1fr; }
         }
@@ -524,6 +565,13 @@
     </style>
 </head>
 <body oncontextmenu="return false;">
+
+    <!-- JS Fallback for Animations -->
+    <noscript>
+        <style>
+            .card { opacity: 1 !important; transform: none !important; }
+        </style>
+    </noscript>
 
     <!-- MAIN SCROLL AREA -->
     <div class="main-scroll-area">
@@ -716,6 +764,22 @@
                 </div>
             </div>
 
+            <!-- NEW CARD: WALL-HACK DEMO (PINK THEME) -->
+            <div class="card theme-pink reveal">
+                <div class="card-header">
+                    <h2 data-i18n="demo_title">Wall-Hack Demo</h2>
+                </div>
+                <div class="card-body">
+                    <p class="rule-text" style="margin-bottom: 10px; color: #E2E8F0; font-size: 14px;" data-i18n="demo_desc">
+                        You Can View Wall-Hack Color Body ProgramBinaryCache Mod Menu ( This is Only Demo Version ) Use Real Version Need To Buy Premium Subscription First.
+                    </p>
+                    
+                    <a href="https://itsmems97.github.io/Demo.html" target="_blank" rel="noopener noreferrer" class="btn-demo" data-i18n="demo_btn">
+                        Wall-Hack Demo
+                    </a>
+                </div>
+            </div>
+
             <!-- CARD 4: PAYMENT -->
             <div class="card theme-gold reveal">
                 <div class="card-header">
@@ -810,8 +874,8 @@
                 <h3 data-i18n="footer_title" style="color: var(--accent-cyan); font-family: 'Outfit'; font-size: 18px; margin-bottom: 10px;">AFTER PAYMENT</h3>
                 <p data-i18n="footer_text" style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Send screenshot proof to get your access.</p>
                 
-                <!-- Direct WhatsApp Button -->
-                <a href="https://wa.me/923041891897?text=*Hello%2C%20here%20is%20my%20payment%20screenshot%20for%20PUBG%20PREMIUM%204.7*" target="_blank" class="btn-primary" data-i18n="footer_btn">Send Payment ScreenShot</a>
+                <!-- Direct WhatsApp Button (Security Fix applied) -->
+                <a href="https://wa.me/923041891897?text=*Hello%2C%20here%20is%20my%20payment%20screenshot%20for%20PUBG%20PREMIUM%204.7*" target="_blank" rel="noopener noreferrer" class="btn-primary" data-i18n="footer_btn">Send Payment ScreenShot</a>
             </div>
 
         </div>
@@ -866,6 +930,9 @@
                 pak_esp: "Esp Location File",
                 pak_magic: "Magic Bullet File",
                 pak_assist: "Aim Assist File",
+                demo_title: "Wall-Hack Demo",
+                demo_desc: "You Can View Wall-Hack Color Body ProgramBinaryCache Mod Menu ( This is Only Demo Version ) Use Real Version Need To Buy Premium Subscription First.",
+                demo_btn: "Wall-Hack Demo",
                 pay_title: "Payment Methods",
                 pay_global: "Worldwide",
                 pay_pak: "Pakistan Only",
@@ -913,6 +980,9 @@
                 pak_esp: "Esp Location File",
                 pak_magic: "Magic Bullet File",
                 pak_assist: "Aim Assist File",
+                demo_title: "Wall-Hack Demo",
+                demo_desc: "Aap Wall-Hack Color Body ProgramBinaryCache Mod Menu dekh sakte hain ( Yeh sirf Demo Version hai ) Real Version use karne ke liye pehle Premium Subscription kharidni hogi.",
+                demo_btn: "Wall-Hack Demo",
                 pay_title: "Payment Methods",
                 pay_global: "Worldwide",
                 pay_pak: "Sirf Pakistan Ke Liye",
@@ -960,6 +1030,9 @@
                 pak_esp: "Esp Location File",
                 pak_magic: "Magic Bullet File",
                 pak_assist: "Aim Assist File",
+                demo_title: "وال ہیک ڈیمو",
+                demo_desc: "آپ وال ہیک کلر باڈی پروگرام بائنری کیش موڈ مینو دیکھ سکتے ہیں (یہ صرف ڈیمو ورژن ہے) اصلی ورژن استعمال کرنے کے لیے پہلے پریمیم سبسکرپشن خریدنی ہوگی۔",
+                demo_btn: "وال ہیک ڈیمو",
                 pay_title: "پیمنٹ کا طریقہ",
                 pay_global: "دنیا بھر کے لیے",
                 pay_pak: "صرف پاکستان کے لیے",
@@ -1007,6 +1080,9 @@
                 pak_esp: "Esp Location File",
                 pak_magic: "Magic Bullet File",
                 pak_assist: "Aim Assist File",
+                demo_title: "عرض Wall-Hack",
+                demo_desc: "يمكنك عرض قائمة تعديل Wall-Hack Color Body ProgramBinaryCache (هذه نسخة تجريبية فقط) لاستخدام النسخة الحقيقية، يجب عليك شراء اشتراك مميز أولاً.",
+                demo_btn: "عرض Wall-Hack",
                 pay_title: "طرق الدفع",
                 pay_global: "عالمي",
                 pay_pak: "باكستان فقط",
@@ -1054,6 +1130,9 @@
                 pak_esp: "Esp Location File",
                 pak_magic: "Magic Bullet File",
                 pak_assist: "Aim Assist File",
+                demo_title: "Demo de Wall-Hack",
+                demo_desc: "Puedes ver el menú de mods Wall-Hack Color Body ProgramBinaryCache (Esta es solo la versión de demostración). Para usar la versión real, primero debes comprar la suscripción Premium.",
+                demo_btn: "Demo de Wall-Hack",
                 pay_title: "Métodos de Pago",
                 pay_global: "Mundial",
                 pay_pak: "Solo Pakistán",
@@ -1078,12 +1157,15 @@
         };
 
         let currentLang = 'en';
+        let langTimer;
 
         /* ======================================================================
-           2. LANGUAGE SWITCHER LOGIC
+           2. LANGUAGE SWITCHER LOGIC (Race Condition Fixed)
            ====================================================================== */
         function changeLanguage(lang, btnElement) {
             if (lang === currentLang) return;
+            
+            clearTimeout(langTimer);
             currentLang = lang;
             
             // UI Update
@@ -1094,13 +1176,17 @@
             const container = document.getElementById('main-container');
             container.classList.add('lang-fade');
 
-            setTimeout(() => {
+            langTimer = setTimeout(() => {
+                if (currentLang !== lang) return; // Safety check
+
                 // Set Direction (RTL for Urdu/Arabic)
                 if (lang === 'ur' || lang === 'ar') {
                     document.documentElement.setAttribute('dir', 'rtl');
+                    document.documentElement.lang = lang;
                     document.body.style.fontFamily = "'Noto Nastaliq Urdu', sans-serif";
                 } else {
                     document.documentElement.setAttribute('dir', 'ltr');
+                    document.documentElement.lang = lang;
                     document.body.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
                 }
 
