@@ -109,6 +109,7 @@
         [dir="rtl"] .list-item { flex-direction: row-reverse; text-align: right; }
         [dir="rtl"] .payment-row { flex-direction: row-reverse; }
         [dir="rtl"] .rule-card { border-left: none; border-right: 4px solid var(--accent-purple); border-radius: var(--radius-md) 0 0 var(--radius-md); }
+        [dir="rtl"] .rule-card.rule-gold { border-right-color: var(--accent-gold); border-left: none; }
         [dir="rtl"] .card-header h2 { font-family: 'Noto Nastaliq Urdu', sans-serif; font-size: 18px; }
         [dir="rtl"] .color-indicator { margin-right: 0; margin-left: 8px; }
 
@@ -270,7 +271,6 @@
         .card.theme-cyan { border-top: 2px solid var(--accent-cyan); }
         .card.theme-purple { border-top: 2px solid var(--accent-purple); }
         .card.theme-gold { border-top: 2px solid var(--accent-gold); }
-        /* UPDATED TO PINK */
         .card.theme-pink { border-top: 2px solid var(--accent-pink); }
 
         .card-header {
@@ -294,7 +294,6 @@
         .theme-cyan .card-header h2 { color: var(--accent-cyan); }
         .theme-purple .card-header h2 { color: var(--accent-purple); }
         .theme-gold .card-header h2 { color: var(--accent-gold); }
-        /* UPDATED TO PINK */
         .theme-pink .card-header h2 { color: var(--accent-pink); }
 
         .card-body {
@@ -352,7 +351,6 @@
         .theme-cyan .icon-glow { background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); }
         .theme-purple .icon-glow { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
         .theme-gold .icon-glow { background: var(--accent-gold); box-shadow: 0 0 15px var(--accent-gold); }
-        /* UPDATED TO PINK */
         .theme-pink .icon-glow { background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
 
         .icon-svg {
@@ -371,7 +369,6 @@
         .theme-cyan .icon-svg { stroke: var(--accent-cyan); filter: drop-shadow(0 5px 5px rgba(0, 229, 255, 0.3)); }
         .theme-purple .icon-svg { stroke: var(--accent-purple); filter: drop-shadow(0 5px 5px rgba(168, 85, 247, 0.3)); }
         .theme-gold .icon-svg { stroke: var(--accent-gold); filter: drop-shadow(0 5px 5px rgba(255, 215, 0, 0.3)); }
-        /* UPDATED TO PINK */
         .theme-pink .icon-svg { stroke: var(--accent-pink); filter: drop-shadow(0 5px 5px var(--accent-pink-glow)); }
 
         /* ==========================================================================
@@ -479,11 +476,22 @@
             margin-bottom: 12px;
         }
 
+        /* NEW: Gold variant for TDM warning */
+        .rule-card.rule-gold {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: rgba(255, 215, 0, 0.15);
+            border-left: 4px solid var(--accent-gold);
+        }
+
         .rule-title {
             font-size: 15px;
             font-weight: 800;
             color: var(--accent-purple);
             margin-bottom: 8px;
+        }
+
+        .rule-card.rule-gold .rule-title {
+            color: var(--accent-gold);
         }
 
         .rule-text {
@@ -717,6 +725,14 @@
                             If Someone Says Permanent Blink Fix - No Need Data On Off Trick. So of course he is Lying!
                         </div>
                     </div>
+
+                    <!-- NEW: TDM WORKING WARNING -->
+                    <div class="rule-card rule-gold">
+                        <div class="rule-title" data-i18n="tdm_warning_title">TDM WORKING</div>
+                        <div class="rule-text" data-i18n="tdm_warning_text">
+                            You will have to enter TDM once from one of your fake accounts, on which the TDM map is unlocked. (If someone says TDM wallhack works 100% without entering TDM, they are lying!)
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -924,6 +940,8 @@
                 wall_choice: "You can also choose the color of your choice.",
                 wall_warning_title: "SECURE NOTICE",
                 wall_warning_text: "If Someone Says Permanent Blink Fix - No Need Data On Off Trick. So of course he is Lying!",
+                tdm_warning_title: "TDM WORKING",
+                tdm_warning_text: "You will have to enter TDM once from one of your fake accounts, on which the TDM map is unlocked. (If someone says TDM wallhack works 100% without entering TDM, they are lying!)",
                 pak_title: "PAK File Features",
                 pak_lua: "AimBot Lua File",
                 pak_pak: "Aimbot Pak File",
@@ -974,6 +992,8 @@
                 wall_choice: "Aap apni pasand ka color bhi choose kar sakte hain.",
                 wall_warning_title: "SECURE NOTICE",
                 wall_warning_text: "Agar koi bole Permanent Blink Fix hai aur Data On Off ki zaroorat nahi, toh wo pakka jhoot bol raha hai!",
+                tdm_warning_title: "TDM WORKING",
+                tdm_warning_text: "Aapko apne kisi fake account se ek baar TDM enter karna hoga, jispe TDM map unlocked ho. (Agar koi bole TDM wallhack 100% bina TDM enter kiye kaam karta hai, toh wo pakka jhoot bol raha hai!)",
                 pak_title: "PAK File Features",
                 pak_lua: "AimBot Lua File",
                 pak_pak: "Aimbot Pak File",
@@ -1024,6 +1044,8 @@
                 wall_choice: "آپ اپنی پسند کا رنگ بھی چن سکتے ہیں۔",
                 wall_warning_title: "سیکیور نوٹس",
                 wall_warning_text: "اگر کوئی کہے کہ پرمننٹ بلنک فکس ہے اور ڈیٹا آن آف کی ضرورت نہیں، تو وہ یقیناً جھوٹ بول رہا ہے!",
+                tdm_warning_title: "ٹی ڈی ایم ورکنگ",
+                tdm_warning_text: "آپ کو اپنے کسی فیک اکاؤنٹ سے ایک بار ٹی ڈی ایم میں داخل ہونا ہوگا، جس پر ٹی ڈی ایم میپ ان لاک ہو۔ (اگر کوئی کہے کہ ٹی ڈی ایم وال ہیک 100% بغیر ٹی ڈی ایم میں داخل ہوئے کام کرتا ہے، تو وہ یقیناً جھوٹ بول رہا ہے!)",
                 pak_title: "پاک فائل فیچرز",
                 pak_lua: "AimBot Lua File",
                 pak_pak: "Aimbot Pak File",
@@ -1074,6 +1096,8 @@
                 wall_choice: "يمكنك أيضًا اختيار اللون الذي تريده.",
                 wall_warning_title: "إشعار آمن",
                 wall_warning_text: "إذا قال شخص ما إن إصلاح الوميض دائم ولا يحتاج إلى حيلة تشغيل وإيقاف البيانات، فهو بالتأكيد يكذب!",
+                tdm_warning_title: "عمل TDM",
+                tdm_warning_text: "سيتعين عليك الدخول إلى TDM مرة واحدة من أحد حساباتك المزيفة، حيث تكون خريطة TDM مفتوحة. (إذا قال شخص ما إن WallHack TDM يعمل بنسبة 100% دون الدخول إلى TDM، فهو بالتأكيد يكذب!)",
                 pak_title: "ميزات ملف PAK",
                 pak_lua: "AimBot Lua File",
                 pak_pak: "Aimbot Pak File",
@@ -1124,6 +1148,8 @@
                 wall_choice: "También puedes elegir el color que quieras.",
                 wall_warning_title: "AVISO SEGURO",
                 wall_warning_text: "Si alguien dice que el arreglo de parpadeo es permanente y no necesita el truco de encender y apagar los datos, ¡definitivamente está mintiendo!",
+                tdm_warning_title: "FUNCIONAMIENTO DE TDM",
+                tdm_warning_text: "Tendrás que entrar en TDM una vez desde una de tus cuentas falsas, en la que el mapa de TDM esté desbloqueado. (¡Si alguien dice que el wallhack de TDM funciona al 100% sin entrar en TDM, está mintiendo!)",
                 pak_title: "Funciones de Archivo PAK",
                 pak_lua: "AimBot Lua File",
                 pak_pak: "Aimbot Pak File",
